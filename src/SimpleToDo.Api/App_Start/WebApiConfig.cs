@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using WebApi.Api.formatters;
+using WebApi.Api.Handlers;
 
 namespace SimpleToDo.Api
 {
@@ -19,6 +22,16 @@ namespace SimpleToDo.Api
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+
+            config.MessageHandlers.Add(new HttpsHandler());
+
+            config.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.LocalOnly;
+
+            config.Formatters.JsonFormatter.SerializerSettings = new JsonSerializerSettings();
+
+            config.Formatters.Add(new BrowserJsonFormatter());
+
         }
     }
 }
