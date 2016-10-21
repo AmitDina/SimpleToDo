@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SimpleToDo.Api.formatters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,10 +29,10 @@ namespace SimpleToDo.Api
 
             config.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.LocalOnly;
 
-            config.Formatters.JsonFormatter.SerializerSettings = new JsonSerializerSettings();
+            config.Formatters.JsonFormatter.SerializerSettings = new DefaultJsonSerializerSettings();
 
             config.Formatters.Add(new BrowserJsonFormatter());
-
+            
         }
     }
 }

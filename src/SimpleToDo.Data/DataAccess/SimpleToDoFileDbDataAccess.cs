@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SimpleToDo.Data.DataAccess
 {
-    public class SimpleToDoFileDbDataAccess<T> : ISimpleToDoDataAccess<T>
+    public class SimpleToDoFileDbDataAccess : ISimpleToDoDataAccess
     {
 
         private string _location;
@@ -19,23 +19,80 @@ namespace SimpleToDo.Data.DataAccess
             _location = location;
         }
 
-        public SimpleToDoResult<T> GetAllSimpleToDoItems()
+
+        public SimpleToDoResult GetAllSimpleToDoItems()
         {
-            SimpleToDoResult<T> res = new SimpleToDoResult<T>();
+            SimpleToDoResult res = new SimpleToDoResult();
 
             try
             {
-                res.Items = new List<ToDoItem<T>>();
 
                 using (StreamReader r = new StreamReader(_location))
                 {
                     string json = r.ReadToEnd();
 
-                    res.Items = JsonConvert.DeserializeObject<List<ToDoItem<T>>>(json);
+                    List<SimpleToDoObject> simpleToDoDbObjects
+                        = JsonConvert.DeserializeObject<List<SimpleToDoObject>>(json);
 
-                    res.Success = true;
+                    res.SimpleToDoItems = new Dictionary<ToDoItem, List<SimpleTask>>();
+
+                    if (simpleToDoDbObjects != null)
+                    {
+                        foreach (SimpleToDoObject simpleToDoDbObject in simpleToDoDbObjects)
+                        {
+                            res.SimpleToDoItems.Add(simpleToDoDbObject.ToDoItem, simpleToDoDbObject.SimpleTasks);
+                        }
+                    }
+
                 }
 
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return res;
+        }
+
+        public SimpleToDoResult GetSimpleToDoItems(Guid toDoItemId)
+        {
+            SimpleToDoResult res = new SimpleToDoResult();
+
+            try
+            {
+                res.SimpleToDoItems = new Dictionary<ToDoItem, List<SimpleTask>>();
+
+                using (StreamReader r = new StreamReader(_location))
+                {
+                    string json = r.ReadToEnd();
+
+                    res.SimpleToDoItems =
+                        JsonConvert.DeserializeObject<Dictionary<ToDoItem, List<SimpleTask>>>(json).Where(o => o.Key.ToDoItemId == toDoItemId).ToDictionary(o => o.Key, y => y.Value);
+
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return res;
+        }
+
+        public BaseResult AddSimpleTodoItems(List<ToDoItem> items)
+        {
+            BaseResult res = new BaseResult();
+
+            try
+            {
+                foreach (ToDoItem item in items)
+                {
+                    res = AddSimpleTodoItem(item);
+                }
             }
             catch (Exception)
             {
@@ -48,32 +105,44 @@ namespace SimpleToDo.Data.DataAccess
             return res;
         }
 
-        public SimpleToDoResult<T> GetSimpleToDoItems(Guid toDoItemId)
-        {
-            throw new NotImplementedException();
-        }
 
-        public BaseResult AddSimpleTodoItems(List<ToDoItem<T>> items)
+        public BaseResult AddSimpleTodoItem(ToDoItem toDoItem)
         {
             BaseResult res = new BaseResult();
 
             try
             {
 
-                SimpleToDoResult<T> allToDoItems = GetAllSimpleToDoItems();
+                SimpleToDoResult allToDoItems = this.GetAllSimpleToDoItems();
 
-                if (allToDoItems != null && allToDoItems.Items != null && allToDoItems.Success)
+                if (allToDoItems != null && allToDoItems.SimpleToDoItems != null && !allToDoItems.SimpleToDoItems.ContainsKey(toDoItem))
                 {
-                    allToDoItems.Items.AddRange(items);
+                    allToDoItems.SimpleToDoItems.Add(toDoItem, new List<SimpleTask>());
                 }
                 else
                 {
-                    allToDoItems = new SimpleToDoResult<T>();
+                    allToDoItems = new SimpleToDoResult();
 
-                    allToDoItems.Items.AddRange(items);
+                    allToDoItems.SimpleToDoItems = new Dictionary<ToDoItem, List<SimpleTask>>();
+
+                    allToDoItems.SimpleToDoItems.Add(toDoItem, new List<SimpleTask>());
                 }
 
-                string json = JsonConvert.SerializeObject(items);
+                List<SimpleToDoObject> simpleToDoDbObjects = new List<SimpleToDoObject>();
+
+
+                // for serialising purpsoe
+                foreach (KeyValuePair<ToDoItem, List<SimpleTask>> item in allToDoItems.SimpleToDoItems)
+                {
+                    SimpleToDoObject simpleToDoDbObject = 
+                        new SimpleToDoObject() { ToDoItem = item.Key, SimpleTasks = item.Value };
+
+                    simpleToDoDbObjects.Add(simpleToDoDbObject);
+                }
+
+
+
+                string json = JsonConvert.SerializeObject(simpleToDoDbObjects);
 
                 System.IO.File.WriteAllText(_location, json);
 
@@ -91,31 +160,64 @@ namespace SimpleToDo.Data.DataAccess
             return res;
         }
 
-        public BaseResult AddSimpleTodoItem(ToDoItem<T> toDoItem)
+        public BaseResult AddSimpleTodoItemTask(Dictionary<ToDoItem, List<SimpleTask>> items)
         {
-            throw new NotImplementedException();
+            BaseResult res = new BaseResult();
+
+            try
+            {
+
+                SimpleToDoResult allToDoItems = GetAllSimpleToDoItems();
+
+                foreach (KeyValuePair<ToDoItem, List<SimpleTask>> toDoItem in items)
+                {
+                    if (allToDoItems == null)
+                        continue;
+
+                    if (!allToDoItems.SimpleToDoItems.ContainsKey(toDoItem.Key))
+                    {
+                        allToDoItems.SimpleToDoItems.Add(toDoItem.Key, toDoItem.Value);
+                    }
+                    else
+                    {
+                        allToDoItems.SimpleToDoItems[toDoItem.Key].AddRange(toDoItem.Value);
+                    }
+
+                    List<SimpleToDoObject> simpleToDoDbObjects = new List<SimpleToDoObject>();
+
+                    foreach (KeyValuePair<ToDoItem, List<SimpleTask>> item in allToDoItems.SimpleToDoItems)
+                    {
+                        SimpleToDoObject simpleToDoDbObject = new SimpleToDoObject()
+                        {
+                            ToDoItem = item.Key,
+                            SimpleTasks = item.Value
+                        };
+
+                        simpleToDoDbObjects.Add(simpleToDoDbObject);
+                    }
+
+                    string json = JsonConvert.SerializeObject(simpleToDoDbObjects);
+
+
+                    System.IO.File.WriteAllText(_location, json);
+
+                    res.Success = true;
+                }
+
+            }
+            catch (Exception)
+            {
+
+                res.Success = false;
+
+                throw;
+            }
+
+            return res;
         }
 
-        public BaseResult UpdateimpleTodoItems(List<ToDoItem<T>> items)
-        {
-            throw new NotImplementedException();
-        }
 
-        public BaseResult UpdateSimpleTodoItem(ToDoItem<T> toDoItem)
-        {
-            throw new NotImplementedException();
-        }
 
-        public BaseResult DeleteSimpleTodoItems(List<Guid> ToDoItems)
-        {
-            throw new NotImplementedException();
-        }
-
-        public BaseResult DeleteSimpleTodoItem(Guid toDoItem)
-        {
-            throw new NotImplementedException();
-        }
     }
-
 
 }

@@ -9,53 +9,39 @@ using System.Threading.Tasks;
 
 namespace SimpleToDo.Core.Repository
 {
-    public class SimpleToDoDBRepository<T> : ISimpleToDoRepository<T> where T : class
+    public class SimpleToDoDBRepository : ISimpleToDoRepository
     {
-        private ISimpleToDoDataAccess<T> _dbRepo;
+        private ISimpleToDoDataAccess _dbRepo;
 
-        public SimpleToDoDBRepository(ISimpleToDoDataAccess<T> dbRepo)
+        public SimpleToDoDBRepository(ISimpleToDoDataAccess dbRepo)
         {
             _dbRepo = dbRepo;
         }
 
-        public SimpleToDoResult<T> GetAllSimpleToDoItems()
+        SimpleToDoResult ISimpleToDoRepository.GetAllSimpleToDoItems()
         {
             return _dbRepo.GetAllSimpleToDoItems();
+
         }
 
-        public SimpleToDoResult<T> GetSimpleToDoItems(Guid toDoItemId)
+        SimpleToDoResult ISimpleToDoRepository.GetSimpleToDoItems(Guid toDoItemId)
         {
-            throw new NotImplementedException();
+            return _dbRepo.GetSimpleToDoItems(toDoItemId);
         }
 
-        public BaseResult AddSimpleTodoItems(List<ToDoItem<T>> items)
+        public BaseResult AddSimpleTodoItems(List<ToDoItem> items)
         {
             return _dbRepo.AddSimpleTodoItems(items);
         }
 
-        public BaseResult AddSimpleTodoItem(ToDoItem<T> toDoItem)
+        public BaseResult AddSimpleTodoItem(ToDoItem toDoItem)
         {
-           return _dbRepo.AddSimpleTodoItems(new List<ToDoItem<T>>() { toDoItem });
+            return _dbRepo.AddSimpleTodoItem(toDoItem);
         }
 
-        public BaseResult UpdateimpleTodoItems(List<ToDoItem<T>> items)
+        public BaseResult AddSimpleTodoItemTask(Dictionary<ToDoItem, List<SimpleTask>> items)
         {
-            throw new NotImplementedException();
-        }
-
-        public BaseResult UpdateSimpleTodoItem(ToDoItem<T> toDoItem)
-        {
-            throw new NotImplementedException();
-        }
-
-        public BaseResult DeleteSimpleTodoItems(List<Guid> ToDoItems)
-        {
-            throw new NotImplementedException();
-        }
-
-        public BaseResult DeleteSimpleTodoItem(Guid toDoItem)
-        {
-            throw new NotImplementedException();
+            return _dbRepo.AddSimpleTodoItemTask(items);
         }
     }
 }

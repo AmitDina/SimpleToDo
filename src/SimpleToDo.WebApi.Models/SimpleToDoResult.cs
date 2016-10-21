@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -7,14 +8,54 @@ using System.Threading.Tasks;
 
 namespace SimpleToDo.WebApi.Models
 {
-    [DataContract()]
-    public class SimpleToDoResult<T> : BaseResult
+    public class SimpleToDoResult
     {
-        [DataMember()]
-        public List<ToDoItem<T>> Items { get; set; }
+        public IEnumerable<ToDoItem> ToDoItems
+        {
+            get
+            {
+                return SimpleToDoItems.Keys;
+            }
+            set
+            {
+            }
+        }
 
-        [DataMember()]
-        public int TotalCount { get; set; }
+        public IEnumerable<List<SimpleTask>> SimpleTasks
+        {
+            get
+            {
+                return SimpleToDoItems.Values;
+            }
+
+            set
+            {
+
+            }
+
+        }
+
+        public IEnumerable<SimpleToDoObject> ToDoItem
+        {
+            get
+            {
+                return SimpleToDoItems.Select(o => new SimpleToDoObject() { ToDoItem = o.Key, SimpleTasks = o.Value });
+            }
+            set
+            {
+            }
+        }
+
+        [JsonIgnore]
+        [IgnoreDataMember]
+        public Dictionary<ToDoItem, List<SimpleTask>> SimpleToDoItems = new Dictionary<ToDoItem, List<SimpleTask>>();
+    }
+
+    public class SimpleToDoObject
+    {
+        public ToDoItem ToDoItem { get; set; }
+
+        public List<SimpleTask> SimpleTasks { get; set; }
 
     }
 }

@@ -1,27 +1,64 @@
-﻿using SimpleToDo.WebApi.Models;
+﻿using SimpleToDo.Core;
+using SimpleToDo.WebApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace SimpleToDo.Api.Controllers
 {
-     [RoutePrefix("api/v1")]
+    [RoutePrefix("api/v1")]
     public class SimpleToDoController : SimpleToDoBaseApiController
     {
+        #region "constructor"
+        public SimpleToDoController()
+        {
+        }
+
+        public SimpleToDoController(IRepositoryContainer repoCon)
+        {
+            _repoCon = repoCon;
+        }
+
+        #endregion
+
+        #region "GET"
         [HttpGet]
-        [Route("simpletodo")]
-        public IHttpActionResult Get()
+        [Route("")]
+        public IHttpActionResult GetAll()
         {
             try
             {
-                SimpleToDoResult<Object> todos = _repoCon.ISimpleToDoRepository.GetAllSimpleToDoItems();
 
-                if (todos.Success)
+                SimplePagedToDoResult<SimpleToDoObject> res = new SimplePagedToDoResult<SimpleToDoObject>();
+
+                SimpleToDoResult todos = _repoCon.ISimpleToDoRepository.GetAllSimpleToDoItems();
+
+                if (todos != null)
                 {
-                    return Ok(todos.Items);
+
+                    if (todos.ToDoItem != null && todos.ToDoItem.Any())
+                    {
+
+                        res.Items = todos.ToDoItem.ToList();
+
+                        res.TotalCount = todos.ToDoItem.Count();
+
+                        res.Success = true;
+
+                        return Ok(res);
+                    }
+                    else
+                    {
+                        res.Message = "Simple Todo empty";
+
+                        return Ok(res);
+                    }
+
+
                 }
                 else
                 {
@@ -31,15 +68,57 @@ namespace SimpleToDo.Api.Controllers
             }
             catch (Exception ex)
             {
-                InternalServerError(ex);
+                return InternalServerError(ex);
             }
 
-            return BadRequest("Something went wrong");
+        }
+
+        [HttpGet]
+        [Route("simpletodo")]
+        public IHttpActionResult GetSimpleToDo()
+        {
+            try
+            {
+
+                SimplePagedToDoResult<ToDoItem> res = new SimplePagedToDoResult<ToDoItem>();
+
+                SimpleToDoResult todos = _repoCon.ISimpleToDoRepository.GetAllSimpleToDoItems();
+
+                if (todos != null )
+                {
+                     if (todos.ToDoItem != null && todos.ToDoItem.Any())
+                    {
+                    res.Items = todos.ToDoItems.ToList();
+
+                    res.TotalCount = todos.ToDoItems.Count();
+
+                    res.Success = true;
+
+                    return Ok(res);
+                    }
+                     else
+                     {
+                         res.Message = "Simple Todo empty";
+
+                         return Ok(res);
+                     }
+                }
+                else
+                {
+
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+              return  InternalServerError(ex);
+            }
+
         }
 
         [HttpGet]
         [Route("simpletodo/{id}")]
-        public IHttpActionResult Get(string id)
+        public IHttpActionResult GetSimpleToDoById(string id)
         {
             try
             {
@@ -47,11 +126,11 @@ namespace SimpleToDo.Api.Controllers
 
                 if (Guid.TryParse(id, out ToDoItemId))
                 {
-                    SimpleToDoResult<Object> todos = _repoCon.ISimpleToDoRepository.GetSimpleToDoItems(ToDoItemId);
+                    SimpleToDoResult todos = _repoCon.ISimpleToDoRepository.GetSimpleToDoItems(ToDoItemId);
 
-                    if (todos.Success)
+                    if (todos != null)
                     {
-                        return Ok(todos.Items);
+                        return Ok(todos);
                     }
                     else
                     {
@@ -63,7 +142,7 @@ namespace SimpleToDo.Api.Controllers
                 {
                     return BadRequest("Invalid todo Id");
                 }
-              
+
             }
             catch (Exception ex)
             {
@@ -73,21 +152,21 @@ namespace SimpleToDo.Api.Controllers
             return BadRequest("Something went wrongS");
         }
 
-        [HttpPost]
-        [Route("simpletodo/add")]
-        public IHttpActionResult Post([FromBody]ToDoItem<Object> todoItems)
+        [HttpGet]
+        [Route("simpletodo/{id}/tasks")]
+        public IHttpActionResult GetSimpleToDoTasks(string id)
         {
-
             try
             {
+                Guid ToDoItemId;
 
-                if (todoItems != null)
+                if (Guid.TryParse(id, out ToDoItemId))
                 {
-                    BaseResult res = _repoCon.ISimpleToDoRepository.AddSimpleTodoItem(todoItems);
+                    SimpleToDoResult todos = _repoCon.ISimpleToDoRepository.GetSimpleToDoItems(ToDoItemId);
 
-                    if (res.Success)
+                    if (todos != null)
                     {
-                        return Ok(res.Message);
+                        return Ok(todos);
                     }
                     else
                     {
@@ -97,7 +176,7 @@ namespace SimpleToDo.Api.Controllers
                 }
                 else
                 {
-                    return BadRequest("Invalid Todo Items");
+                    return BadRequest("Invalid todo Id");
                 }
 
             }
@@ -107,42 +186,103 @@ namespace SimpleToDo.Api.Controllers
             }
 
             return BadRequest("Something went wrongS");
+        }
+
+        #endregion
+
+        #region "POST"
+        [HttpPost]
+        [Route("simpletodo/add")]
+        public async Task<HttpResponseMessage> Post([FromBody]ToDoItem todoItem)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+
+                if (todoItem != null)
+                {
+                    BaseResult res = _repoCon.ISimpleToDoRepository.AddSimpleTodoItem(todoItem);
+
+                    if (res.Success)
+                    {
+                        return new HttpResponseMessage(HttpStatusCode.Created);
+
+                        return new HttpResponseMessage(HttpStatusCode.Created);
+                    }
+                    else
+                    {
+                        return new HttpResponseMessage(HttpStatusCode.Forbidden);
+                    }
+                }
+                else
+                {
+                    return new HttpResponseMessage(HttpStatusCode.BadRequest);
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            }
+
 
         }
 
         [HttpPost]
         [Route("simpletodo/{id}/add")]
-        public IHttpActionResult Post([FromUri] string id, [FromBody]SimpleTask<Object> value)
+        public async Task<HttpResponseMessage> Post([FromUri] string id, [FromBody]List<SimpleTask> values)
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+
                 Guid ToDoItemId;
 
                 if (Guid.TryParse(id, out ToDoItemId))
                 {
-                    if (value != null)
+                    if (values != null)
                     {
-                        // Item<Object> task = new Item<Object>() { Type = (Object)Convert.ChangeType(value.Type, typeof(Object)), Title = "Hello" };
-                        BaseResult res = new BaseResult();//= _repoCon.ISimpleToDoRepository.AddSimpleTodoItem(todoItems);
 
-                        if (res.Success)
+                        SimpleToDoResult todos = _repoCon.ISimpleToDoRepository.GetSimpleToDoItems(ToDoItemId);
+
+                        if (todos != null)
                         {
-                            return Ok(res.Message);
+                            Dictionary<ToDoItem, List<SimpleTask>> itemsToadd = new Dictionary<ToDoItem, List<SimpleTask>>();
+
+                            itemsToadd.Add(todos.ToDoItems.FirstOrDefault(), values);
+
+                            BaseResult res = _repoCon.ISimpleToDoRepository.AddSimpleTodoItemTask(itemsToadd);
+
+                            if (res.Success)
+                            {
+                                return new HttpResponseMessage(HttpStatusCode.Created);
+
+                            }
+                            else
+                            {
+
+                                return new HttpResponseMessage(HttpStatusCode.InternalServerError);
+                            }
+
+
                         }
                         else
                         {
-
-                            return NotFound();
+                            return new HttpResponseMessage(HttpStatusCode.NotFound);
                         }
+
                     }
                     else
                     {
-                        return BadRequest("Simple Task empty");
+                        return new HttpResponseMessage(HttpStatusCode.BadRequest);
                     }
                 }
                 else
                 {
-                    return BadRequest("Invalid simple Task Id");
+                    return new HttpResponseMessage(HttpStatusCode.BadRequest);
                 }
 
             }
@@ -151,9 +291,11 @@ namespace SimpleToDo.Api.Controllers
                 InternalServerError(ex);
             }
 
-            return BadRequest("Something went wrongS");
+            return new HttpResponseMessage(HttpStatusCode.BadRequest);
 
         }
+
+        #endregion
 
         // PUT api/<controller>/5
         public IHttpActionResult Put(int id, [FromBody]string value)

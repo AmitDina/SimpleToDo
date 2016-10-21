@@ -7,22 +7,16 @@ using System.Threading.Tasks;
 
 namespace SimpleToDo.Core.Repository
 {
-    public interface ISimpleToDoRepository<T>
+    public interface ISimpleToDoRepository
     {
-        SimpleToDoResult<T> GetAllSimpleToDoItems();
+        SimpleToDoResult GetAllSimpleToDoItems();
 
-        SimpleToDoResult<T> GetSimpleToDoItems(Guid toDoItemId);
+        SimpleToDoResult GetSimpleToDoItems(Guid toDoItemId);
 
-        BaseResult AddSimpleTodoItems(List<ToDoItem<T>> items);
+        BaseResult AddSimpleTodoItems(List<ToDoItem> items);
 
-        BaseResult AddSimpleTodoItem(ToDoItem<T> toDoItem);
+        BaseResult AddSimpleTodoItem(ToDoItem toDoItem);
 
-        BaseResult UpdateimpleTodoItems(List<ToDoItem<T>> items);
-
-        BaseResult UpdateSimpleTodoItem(ToDoItem<T> toDoItem);
-
-        BaseResult DeleteSimpleTodoItems(List<Guid> ToDoItems);
-
-        BaseResult DeleteSimpleTodoItem(Guid toDoItem);
+        BaseResult AddSimpleTodoItemTask(Dictionary<ToDoItem, List<SimpleTask>> items);
     }
 }

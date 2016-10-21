@@ -11,11 +11,16 @@ namespace SimpleToDo.Api.Controllers
 {
     public abstract class SimpleToDoBaseApiController : ApiController
     {
-        protected internal IRepositoryContainer<Object> _repoCon;
+        protected internal IRepositoryContainer _repoCon;
 
         public SimpleToDoBaseApiController()
         {
-            _repoCon = new AspNetRepositoryContainer<Object>();
+            _repoCon = new AspNetRepositoryContainer();
+        }
+
+        public SimpleToDoBaseApiController(IRepositoryContainer repoCon)
+        {
+            _repoCon = repoCon;
         }
 
         protected internal virtual StatusCodeResult Forbidden()

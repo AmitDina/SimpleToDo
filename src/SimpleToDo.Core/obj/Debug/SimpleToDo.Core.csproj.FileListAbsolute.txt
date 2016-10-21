@@ -1,3 +1,26 @@
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\bin\Debug\SimpleToDo.Core.dll
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\bin\Debug\SimpleToDo.Core.pdb
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\bin\Debug\Newtonsoft.Json.dll
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\bin\Debug\SimpleInjector.dll
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\bin\Debug\SimpleInjector.Extensions.ExecutionContextScoping.dll
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\bin\Debug\SimpleInjector.Integration.WebApi.dll
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\bin\Debug\SimpleToDo.Data.dll
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\bin\Debug\SimpleToDo.WebApi.Models.dll
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\bin\Debug\System.Net.Http.Formatting.dll
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\bin\Debug\System.Web.Http.dll
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\bin\Debug\System.Web.Http.WebHost.dll
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\bin\Debug\SimpleToDo.Data.pdb
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\bin\Debug\SimpleToDo.WebApi.Models.pdb
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\bin\Debug\Newtonsoft.Json.xml
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\bin\Debug\SimpleInjector.xml
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\bin\Debug\SimpleInjector.Extensions.ExecutionContextScoping.xml
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\bin\Debug\SimpleInjector.Integration.WebApi.xml
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\bin\Debug\System.Net.Http.Formatting.xml
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\bin\Debug\System.Web.Http.xml
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\bin\Debug\System.Web.Http.WebHost.xml
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\obj\Debug\SimpleToDo.Core.csprojResolveAssemblyReference.cache
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\obj\Debug\SimpleToDo.Core.dll
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Core\obj\Debug\SimpleToDo.Core.pdb
 C:\AmitPore.Source\Simple ToDo Test\src\SimpleToDo.Core\bin\Debug\SimpleToDo.Core.dll
 C:\AmitPore.Source\Simple ToDo Test\src\SimpleToDo.Core\bin\Debug\SimpleToDo.Core.pdb
 C:\AmitPore.Source\Simple ToDo Test\src\SimpleToDo.Core\bin\Debug\Newtonsoft.Json.dll

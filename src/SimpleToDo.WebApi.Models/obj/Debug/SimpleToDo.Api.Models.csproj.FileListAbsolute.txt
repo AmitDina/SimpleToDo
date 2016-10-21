@@ -1,4 +1,12 @@
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.WebApi.Models\bin\Debug\SimpleToDo.WebApi.Models.dll
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.WebApi.Models\bin\Debug\SimpleToDo.WebApi.Models.pdb
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.WebApi.Models\bin\Debug\Newtonsoft.Json.dll
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.WebApi.Models\bin\Debug\Newtonsoft.Json.xml
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.WebApi.Models\obj\Debug\SimpleToDo.WebApi.Models.dll
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.WebApi.Models\obj\Debug\SimpleToDo.WebApi.Models.pdb
 C:\AmitPore.Source\Simple ToDo Test\src\SimpleToDo.WebApi.Models\bin\Debug\SimpleToDo.WebApi.Models.dll
 C:\AmitPore.Source\Simple ToDo Test\src\SimpleToDo.WebApi.Models\bin\Debug\SimpleToDo.WebApi.Models.pdb
+C:\AmitPore.Source\Simple ToDo Test\src\SimpleToDo.WebApi.Models\bin\Debug\Newtonsoft.Json.dll
+C:\AmitPore.Source\Simple ToDo Test\src\SimpleToDo.WebApi.Models\bin\Debug\Newtonsoft.Json.xml
 C:\AmitPore.Source\Simple ToDo Test\src\SimpleToDo.WebApi.Models\obj\Debug\SimpleToDo.WebApi.Models.dll
 C:\AmitPore.Source\Simple ToDo Test\src\SimpleToDo.WebApi.Models\obj\Debug\SimpleToDo.WebApi.Models.pdb

@@ -9,7 +9,7 @@ using System.Web.Http.Dependencies;
 
 namespace SimpleToDo.Core
 {
-    public class AspNetRepositoryContainer<T> : IRepositoryContainer<T>
+    public class AspNetRepositoryContainer : IRepositoryContainer
     {
         private readonly IDependencyResolver _ds;
 
@@ -18,11 +18,11 @@ namespace SimpleToDo.Core
             _ds = GlobalConfiguration.Configuration.DependencyResolver;
         }
 
-        public ISimpleToDoRepository<T> ISimpleToDoRepository
+        public ISimpleToDoRepository ISimpleToDoRepository
         {
             get
             {
-                return (ISimpleToDoRepository<T>)_ds.GetService(typeof(ISimpleToDoRepository<T>));
+                return (ISimpleToDoRepository)_ds.GetService(typeof(ISimpleToDoRepository));
             }
         }
     }

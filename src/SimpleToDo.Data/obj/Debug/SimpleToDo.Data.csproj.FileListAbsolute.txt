@@ -1,3 +1,12 @@
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Data\bin\Debug\SimpleToDo.Data.dll
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Data\bin\Debug\SimpleToDo.Data.pdb
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Data\bin\Debug\Newtonsoft.Json.dll
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Data\bin\Debug\SimpleToDo.WebApi.Models.dll
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Data\bin\Debug\SimpleToDo.WebApi.Models.pdb
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Data\bin\Debug\Newtonsoft.Json.xml
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Data\obj\Debug\SimpleToDo.Data.csprojResolveAssemblyReference.cache
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Data\obj\Debug\SimpleToDo.Data.dll
+C:\Users\brandview\Documents\Visual Studio 2013\Projects\Simple ToDo\src\SimpleToDo.Data\obj\Debug\SimpleToDo.Data.pdb
 C:\AmitPore.Source\Simple ToDo Test\src\SimpleToDo.Data\bin\Debug\SimpleToDo.Data.dll
 C:\AmitPore.Source\Simple ToDo Test\src\SimpleToDo.Data\bin\Debug\SimpleToDo.Data.pdb
 C:\AmitPore.Source\Simple ToDo Test\src\SimpleToDo.Data\bin\Debug\Newtonsoft.Json.dll

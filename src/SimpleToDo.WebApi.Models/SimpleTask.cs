@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SimpleToDo.WebApi.Models
 {
-    public class SimpleTask<T>
+
+    public class SimpleTask
     {
-        public T SimpleTaskType { get; set; }
+        public Guid ToDoItemId { get; set; }
 
         public Guid SimpleTaskId { get; set; }
 

@@ -1,6 +1,7 @@
 ﻿using SimpleToDo.Core;
 using SimpleToDo.Core.Repository;
 using SimpleToDo.Data.DataAccess;
+using SimpleToDo.WebApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,82 +19,30 @@ namespace SimpleToDo.Api
 
             SimpleInjector.Container container = new SimpleInjector.Container();
 
-            string jsonDbPath = LoadSetting<string>("DB", String.Format("{0}\\App_Data\\data.json", AppDomain.CurrentDomain.BaseDirectory));
+            //can specify what sort of Db to use 
+            string jsonDbPath =
+                SimpleToDoConfig.LoadSetting<string>("DB", String.Format("{0}\\App_Data\\data.json", AppDomain.CurrentDomain.BaseDirectory));
 
-            bool cache = LoadSetting<bool>("CacheOnly", false);
+            bool cache = SimpleToDoConfig.LoadSetting<bool>("CacheOnly", true);
 
-            container.RegisterSingleton<ISimpleToDoRepository<Object>>(new SimpleToDoCacheRepository<Object>(new SimpleToDoFileDbDataAccess<Object>(jsonDbPath)));
-
-            // container.RegisterSingleton<IToDoRepository<int>>(new WebApi.Core.Repository.ToDoRepository<int>());
-
-            //  container.Register<IToDoRepository<String>, WebApi.Core.Repository.ToDoRepository<String>>();
-
-            //container.RegisterDecorator(typeof(ICustomerRepository),
-            //        typeof(CustomerDBRepository));
-
-            //container.RegisterW
-            //container.RegisterSingleton(typeof(IToDoRepository<>), new[] { typeof(ToDoRepository<>) });
-
-
-
-            GlobalConfiguration.Configuration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(container);
-
-            // DependencyResolver.SetResolver(new SimpleInjectorDependencyResolver(container));
-
-            IRepositoryContainer<Object> repoCon = new AspNetRepositoryContainer<Object>();
-
-            //  IRepositoryContainer<String> repoCon2 = new AspNetRepositoryContainer<String>();
-        }
-
-        #region Configuration
-
-        public T TryParse<T>(object value)
-        {
-
-            try
+            if (cache)
             {
-
-                if (value == null)
-                {
-                    return default(T);
-                }
-
-                return (T)(System.ComponentModel.TypeDescriptor.GetConverter(typeof(T)).ConvertFrom(value));
-
-            }
-            catch (Exception)
-            {
-                throw new Exception("Error trying to parse setting - " + value.ToString());
-
-            }
-
-        }
-
-        private T LoadSetting<T>(string SettingName, T defaultVal)
-        {
-
-            if ((GetAppSettingString(SettingName)) != null)
-            {
-
-                return TryParse<T>(GetAppSettingString(SettingName));
-
+                // cache Repo
+                container.RegisterSingleton<ISimpleToDoRepository>(new SimpleToDoCacheRepository(new SimpleToDoFileDbDataAccess(jsonDbPath)));
             }
             else
             {
 
-                return defaultVal;
-
+                //Db Repo 
+                container.RegisterSingleton<ISimpleToDoRepository>(new SimpleToDoDBRepository(new SimpleToDoFileDbDataAccess(jsonDbPath)));
             }
 
+
+            GlobalConfiguration.Configuration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(container);
+
+
+            IRepositoryContainer repoCon = new AspNetRepositoryContainer();
+
         }
-
-        private string GetAppSettingString(string SettingName)
-        {
-
-            return System.Configuration.ConfigurationManager.AppSettings[SettingName];
-
-        }
-
-        #endregion
     }
 }

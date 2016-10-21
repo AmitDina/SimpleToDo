@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace SimpleToDo.Core
 {
-    public interface IRepositoryContainer<T>
+    public interface IRepositoryContainer
     {
-        ISimpleToDoRepository<T> ISimpleToDoRepository { get; }
+        ISimpleToDoRepository ISimpleToDoRepository { get; }
     }
 }

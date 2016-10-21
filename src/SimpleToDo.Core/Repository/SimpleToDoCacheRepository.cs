@@ -11,15 +11,15 @@ using System.Threading.Tasks;
 
 namespace SimpleToDo.Core.Repository
 {
-    public class SimpleToDoCacheRepository<T> : ISimpleToDoRepository<T> where T : class
+    public class SimpleToDoCacheRepository : ISimpleToDoRepository 
     {
         private const string TODOCACHEIDENT = "TODOCACHE";
 
         private MemoryCache _toDoCache;
 
-        private ISimpleToDoDataAccess<T> _dbRepo;
+        private ISimpleToDoDataAccess _dbRepo;
 
-        public SimpleToDoCacheRepository(ISimpleToDoDataAccess<T> dbRepo)
+        public SimpleToDoCacheRepository(ISimpleToDoDataAccess dbRepo)
         {
             NameValueCollection cacheConfig = new NameValueCollection();
 
@@ -37,107 +37,133 @@ namespace SimpleToDo.Core.Repository
             CacheSimpleToDo();
         }
 
-        public List<ToDoItem<T>> CacheSimpleToDo()
+        public Dictionary<ToDoItem, List<SimpleTask>> CacheSimpleToDo()
         {
 
             if (!_toDoCache.Contains(TODOCACHEIDENT))
             {
 
-                SimpleToDoResult<T> allSimpleTodos = _dbRepo.GetAllSimpleToDoItems();
+                SimpleToDoResult allSimpleTodos = _dbRepo.GetAllSimpleToDoItems();
 
-                if (allSimpleTodos != null && allSimpleTodos.Items != null && allSimpleTodos.Success)
+                if (allSimpleTodos != null && allSimpleTodos.SimpleToDoItems != null)
                 {
                     CacheItemPolicy _policy = new CacheItemPolicy();
 
                     _policy.Priority = System.Runtime.Caching.CacheItemPriority.NotRemovable;
                     _policy.AbsoluteExpiration = DateTime.Now.AddHours(6);
 
-                    _toDoCache.Set(TODOCACHEIDENT, allSimpleTodos.Items, _policy);
+                    _toDoCache.Set(TODOCACHEIDENT, allSimpleTodos.SimpleToDoItems, _policy);
 
-                    return allSimpleTodos.Items;
+                    return allSimpleTodos.SimpleToDoItems;
                 }
                 else
-                    return null;
+                    return new Dictionary<ToDoItem,List<SimpleTask>>();
             }
             else
             {
-                return (List<ToDoItem<T>>)_toDoCache[TODOCACHEIDENT];
+                return (Dictionary<ToDoItem, List<SimpleTask>>)_toDoCache[TODOCACHEIDENT];
             }
 
         }
 
-        public List<ToDoItem<T>> GetCachedToDoItems(ToDoItem<T> todoItem)
+        public ToDoItem GetCachedToDoItem(ToDoItem todoItem)
         {
-            if (CacheSimpleToDo().Contains(todoItem))
+            if (CacheSimpleToDo().ContainsKey(todoItem))
             {
-                return CacheSimpleToDo().Where(o => o.ToDoItemId == todoItem.ToDoItemId).ToList();
+                return CacheSimpleToDo().Keys.Where(o => o.ToDoItemId == todoItem.ToDoItemId).FirstOrDefault();
             }
-
 
             return null;
         }
 
-        public SimpleToDoResult<T> GetAllSimpleToDoItems()
+
+        public List<ToDoItem> GetCachedToDoItems()
+        {
+            return CacheSimpleToDo().Keys.ToList();
+        }
+
+        public List<SimpleTask> GetCachedToDoItemTasks(ToDoItem todoItem)
+        {
+            if (CacheSimpleToDo().ContainsKey(todoItem))
+            {
+                return CacheSimpleToDo()[todoItem];
+            }
+
+            return null;
+        }
+
+        public SimpleToDoResult GetAllSimpleToDoItems()
         {
 
-            SimpleToDoResult<T> res = new SimpleToDoResult<T>();
+            SimpleToDoResult res = new SimpleToDoResult();
 
-            List<ToDoItem<T>> cacheContent = CacheSimpleToDo();
+            Dictionary<ToDoItem, List<SimpleTask>> cacheContent = CacheSimpleToDo();
 
             if (cacheContent != null)
             {
-                res.Items = cacheContent;
-
-                res.Success = true;
+                res.SimpleToDoItems = cacheContent;
             }
 
 
             return res;
         }
 
-        public SimpleToDoResult<T> GetSimpleToDoItems(Guid toDoItemId)
+        public SimpleToDoResult GetSimpleToDoItems(Guid toDoItemId)
         {
-            throw new NotImplementedException();
+
+            SimpleToDoResult res = new SimpleToDoResult();
+
+            res.SimpleToDoItems = GetAllSimpleToDoItems().SimpleToDoItems.Where(o => o.Key.ToDoItemId == toDoItemId).ToDictionary(o => o.Key, y => y.Value);
+
+            return res;
         }
 
-        public BaseResult AddSimpleTodoItems(List<ToDoItem<T>> items)
-        {
-            throw new NotImplementedException();
-
-        }
-
-        public BaseResult AddSimpleTodoItem(ToDoItem<T> toDoItem)
+        public BaseResult AddSimpleTodoItems(List<ToDoItem> items)
         {
             BaseResult res = new BaseResult();
 
-            if (GetCachedToDoItems(toDoItem) == null)
+            foreach (ToDoItem item in items)
             {
-                res = _dbRepo.AddSimpleTodoItems(new List<ToDoItem<T>>() { toDoItem });
-
-                CacheSimpleToDo().Add(toDoItem);
+                res = AddSimpleTodoItem(item);
             }
 
             return res;
         }
 
-        public BaseResult UpdateimpleTodoItems(List<ToDoItem<T>> items)
+        public BaseResult AddSimpleTodoItem(ToDoItem toDoItem)
         {
-            throw new NotImplementedException();
+            BaseResult res = new BaseResult();
+
+            if (GetCachedToDoItem(toDoItem) == null)
+            {
+                res = _dbRepo.AddSimpleTodoItem(toDoItem);
+
+                CacheSimpleToDo().Add(toDoItem, new List<SimpleTask>());
+            }
+
+            return res;
         }
 
-        public BaseResult UpdateSimpleTodoItem(ToDoItem<T> toDoItem)
+        public BaseResult AddSimpleTodoItemTask(Dictionary<ToDoItem, List<SimpleTask>> items)
         {
-            throw new NotImplementedException();
+            BaseResult res = new BaseResult();
+            res = _dbRepo.AddSimpleTodoItemTask(items);
+
+            foreach (KeyValuePair<ToDoItem, List<SimpleTask>> item in items)
+            {
+                if (GetCachedToDoItemTasks(item.Key) == null)
+                {
+
+                    CacheSimpleToDo().Add(item.Key, item.Value);
+                }
+
+            }
+
+
+            return res;
         }
 
-        public BaseResult DeleteSimpleTodoItems(List<Guid> ToDoItems)
-        {
-            throw new NotImplementedException();
-        }
 
-        public BaseResult DeleteSimpleTodoItem(Guid toDoItem)
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }
