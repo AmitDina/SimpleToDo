@@ -85,18 +85,6 @@ SimpleTasks: [
 ]
 ```
 
- `Get single Todo item`  
-
-```
-http://localhost:51573/api/v1/simpletodo/{id}
-```
- `Get single Todo item and its tasks`  
-
-```
-http://localhost:51573/api/v1/simpletodo/{id}/tasks
-```
-
-
 
 ## Bugs and enhancements 
 
